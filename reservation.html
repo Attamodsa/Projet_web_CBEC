@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Réserver une salle — CampusBook</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/composants.css">
+  <script type="module" src="js/pages/reservation.js"></script>
+</head>
+<body>
+
+  <!-- ========== EN-TÊTE COMMUN ========== -->
+  <header class="entete">
+    <a href="index.html" class="logo">Campus<span>Book</span></a>
+    <nav class="nav-principale" aria-label="Navigation principale">
+      <ul>
+        <li><a href="index.html">Catalogue des salles</a></li>
+        <li><a href="reservation.html" aria-current="page">Réserver</a></li>
+        <li><a href="mes-reservations.html">Mes réservations</a></li>
+      </ul>
+    </nav>
+    <div class="utilisateur">
+      <span class="avatar" aria-hidden="true">CB</span>
+      <span class="utilisateur-nom">Calvin BERNARDO</span>
+    </div>
+  </header>
+
+  <main class="conteneur">
+
+    <!-- ========== FIL D'ARIANE + TITRE ========== -->
+    <nav class="fil-ariane" aria-label="Fil d'Ariane">
+      <ol>
+        <li><a href="index.html">Catalogue</a></li>
+        <li id="ariane-salle">Salle</li>
+        <li aria-current="page">Réservation</li>
+      </ol>
+    </nav>
+
+    <h1 id="titre-reservation">Réserver une salle</h1>
+    <p class="sous-titre">Complétez le formulaire. Les vérifications sont faites avant l'enregistrement.</p>
+
+    <div class="reservation">
+
+      <!-- ========== FORMULAIRE ========== -->
+      <section class="panneau" aria-label="Formulaire de réservation">
+
+        <!-- Récapitulatif des erreurs (affiché par afficherErreurs()) -->
+        <div id="recap-erreurs" class="alerte alerte-erreur" role="alert" tabindex="-1" hidden>
+          <p class="alerte-titre" id="recap-titre">La réservation n'a pas pu être enregistrée</p>
+          <ul id="recap-liste"></ul>
+        </div>
+
+        <!-- Message de succès (affiché après creerReservation()) -->
+        <div id="message-succes" class="alerte alerte-succes" role="status" hidden></div>
+
+        <form id="form-reservation" novalidate>
+
+          <!-- Salle : pré-remplie depuis l'URL (?salle=S03), sinon choisie ici -->
+          <div class="champ">
+            <label for="salle">Salle <span class="obligatoire" aria-hidden="true">*</span></label>
+            <select id="salle" name="salleId" required aria-describedby="erreur-salle">
+              <option value="">— Choisir une salle —</option>
+              <!-- Options générées par JS à partir de SALLES -->
+            </select>
+            <p class="erreur-champ" id="erreur-salle"></p>
+          </div>
+
+          <div class="ligne-3">
+            <div class="champ">
+              <label for="date">Date <span class="obligatoire" aria-hidden="true">*</span></label>
+              <input type="date" id="date" name="date" required aria-describedby="erreur-date">
+              <p class="erreur-champ" id="erreur-date"></p>
+            </div>
+            <div class="champ">
+              <label for="heure-debut">Heure de début <span class="obligatoire" aria-hidden="true">*</span></label>
+              <input type="time" id="heure-debut" name="heureDebut" required
+                     min="08:00" max="19:30" step="1800" aria-describedby="erreur-heure-debut">
+              <p class="erreur-champ" id="erreur-heure-debut"></p>
+            </div>
+            <div class="champ">
+              <label for="heure-fin">Heure de fin <span class="obligatoire" aria-hidden="true">*</span></label>
+              <input type="time" id="heure-fin" name="heureFin" required
+                     min="08:30" max="20:00" step="1800" aria-describedby="aide-horaires erreur-heure-fin">
+              <p class="aide" id="aide-horaires">Pas de 30 min · 08:00 – 20:00</p>
+              <p class="erreur-champ" id="erreur-heure-fin"></p>
+            </div>
+          </div>
+
+          <div class="ligne-2">
+            <div class="champ">
+              <label for="participants">Nombre de participants <span class="obligatoire" aria-hidden="true">*</span></label>
+              <input type="number" id="participants" name="nbParticipants" required
+                     min="1" step="1" aria-describedby="erreur-participants">
+              <p class="erreur-champ" id="erreur-participants"></p>
+            </div>
+            <div class="champ">
+              <label for="motif">Motif</label>
+              <input type="text" id="motif" name="motif" maxlength="80"
+                     placeholder="ex. Réunion projet CampusBook">
+            </div>
+          </div>
+
+          <div class="ligne-2">
+            <div class="champ">
+              <label for="nom">Nom <span class="obligatoire" aria-hidden="true">*</span></label>
+              <input type="text" id="nom" name="nom" required autocomplete="name"
+                     aria-describedby="erreur-nom">
+              <p class="erreur-champ" id="erreur-nom"></p>
+            </div>
+            <div class="champ">
+              <label for="email">E-mail école <span class="obligatoire" aria-hidden="true">*</span></label>
+              <input type="email" id="email" name="email" required autocomplete="email"
+                     placeholder="prenom.nom@epita.fr" aria-describedby="erreur-email">
+              <p class="erreur-champ" id="erreur-email"></p>
+            </div>
+          </div>
+
+          <div class="champ">
+            <label for="commentaire">Commentaire (optionnel)</label>
+            <textarea id="commentaire" name="commentaire" rows="3" maxlength="300"></textarea>
+          </div>
+
+          <p class="regles">
+            <strong>Règles :</strong> durée de 30 min à 4 h · fin strictement après le début ·
+            pas de réservation dans le passé · horaires 08:00 – 20:00 · participants ≤ capacité.
+          </p>
+
+          <div class="actions actions-droite">
+            <a href="index.html" class="btn btn-secondaire">Annuler</a>
+            <button type="submit" class="btn btn-primaire">Confirmer la réservation</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ========== COLONNE DE DROITE ========== -->
+      <aside class="colonne-infos">
+
+        <!-- Fiche de la salle (remplie par JS selon la salle choisie) -->
+        <section id="fiche-salle" class="panneau fiche-salle" aria-labelledby="fiche-nom">
+          <img id="fiche-photo" src="" alt="" class="fiche-photo">
+          <h2 id="fiche-nom">Aucune salle sélectionnée</h2>
+          <p id="fiche-description">Choisissez une salle pour voir sa fiche.</p>
+          <dl class="fiche-details">
+            <dt>Capacité</dt>     <dd id="fiche-capacite">—</dd>
+            <dt>Localisation</dt> <dd id="fiche-localisation">—</dd>
+            <dt>Accès PMR</dt>    <dd id="fiche-pmr">—</dd>
+          </dl>
+          <ul id="fiche-equipements" class="etiquettes"></ul>
+        </section>
+
+        <!-- Planning du jour (rempli par afficherPlanning()) -->
+        <section id="planning" class="panneau planning" aria-labelledby="planning-titre">
+          <h2 id="planning-titre">Occupation du jour</h2>
+          <div id="planning-grille" class="planning-grille"></div>
+          <p id="prochain-creneau" class="aide"></p>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="pied">
+    <p>CampusBook · Groupe CBEC — Eduardo COSTA PAULO &amp; Calvin BERNARDO</p>
+  </footer>
+
+</body>
+</html>

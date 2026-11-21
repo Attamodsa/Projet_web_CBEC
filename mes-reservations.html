@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mes réservations — CampusBook</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/composants.css">
+  <script type="module" src="js/pages/mes-reservations.js"></script>
+</head>
+<body>
+
+  <!-- ========== EN-TÊTE COMMUN ========== -->
+  <header class="entete">
+    <a href="index.html" class="logo">Campus<span>Book</span></a>
+    <nav class="nav-principale" aria-label="Navigation principale">
+      <ul>
+        <li><a href="index.html">Catalogue des salles</a></li>
+        <li><a href="reservation.html">Réserver</a></li>
+        <li><a href="mes-reservations.html" aria-current="page">Mes réservations</a></li>
+      </ul>
+    </nav>
+    <div class="utilisateur">
+      <span class="avatar" aria-hidden="true">CB</span>
+      <span class="utilisateur-nom">Calvin BERNARDO</span>
+    </div>
+  </header>
+
+  <main class="conteneur">
+
+    <h1>Mes réservations</h1>
+    <p class="sous-titre">Réservations enregistrées pour <span id="email-utilisateur">calvin.b@epita.fr</span></p>
+
+    <!-- Message après annulation (rempli par confirmerAnnulation()) -->
+    <div id="message-annulation" class="alerte alerte-succes" role="status" hidden></div>
+
+    <!-- ========== RÉSUMÉ CHIFFRÉ ========== -->
+    <section class="compteurs" aria-label="Résumé">
+      <div class="compteur">
+        <p class="compteur-libelle">À venir</p>
+        <p class="compteur-valeur" id="compteur-a-venir">0</p>
+      </div>
+      <div class="compteur">
+        <p class="compteur-libelle">Heures réservées cette semaine</p>
+        <p class="compteur-valeur" id="compteur-heures">0 h</p>
+      </div>
+      <div class="compteur">
+        <p class="compteur-libelle">Prochaine réservation</p>
+        <p class="compteur-valeur compteur-texte" id="compteur-prochaine">Aucune</p>
+      </div>
+    </section>
+
+    <!-- ========== ONGLETS + TABLEAU ========== -->
+    <section class="panneau panneau-tableau">
+
+      <div class="onglets" role="tablist" aria-label="Filtrer les réservations">
+        <button type="button" role="tab" id="onglet-a-venir" data-onglet="a-venir"
+                aria-selected="true" aria-controls="panneau-reservations">
+          À venir (<span id="nb-a-venir">0</span>)
+        </button>
+        <button type="button" role="tab" id="onglet-passees" data-onglet="passees"
+                aria-selected="false" aria-controls="panneau-reservations" tabindex="-1">
+          Passées (<span id="nb-passees">0</span>)
+        </button>
+        <button type="button" role="tab" id="onglet-annulees" data-onglet="annulees"
+                aria-selected="false" aria-controls="panneau-reservations" tabindex="-1">
+          Annulées (<span id="nb-annulees">0</span>)
+        </button>
+      </div>
+
+      <div id="panneau-reservations" role="tabpanel" aria-labelledby="onglet-a-venir">
+        <div class="tableau-barre">
+          <p class="aide">Triées par date croissante</p>
+          <div>
+            <label for="filtre-salle" class="visuellement-cache">Filtrer par salle</label>
+            <select id="filtre-salle" name="filtreSalle">
+              <option value="">Toutes les salles</option>
+              <!-- Options générées par JS à partir de SALLES -->
+            </select>
+          </div>
+        </div>
+
+        <table class="tableau">
+          <thead>
+            <tr>
+              <th scope="col">Salle</th>
+              <th scope="col">Date</th>
+              <th scope="col">Horaire</th>
+              <th scope="col">Participants</th>
+              <th scope="col">Statut</th>
+              <th scope="col" class="col-actions">Actions</th>
+            </tr>
+          </thead>
+          <!-- Lignes générées par afficherReservations(onglet) -->
+          <tbody id="corps-reservations"></tbody>
+        </table>
+
+        <p id="aucune-reservation" class="etat-vide" hidden>
+          Aucune réservation dans cette catégorie.
+          <a href="index.html">Parcourir le catalogue</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pied">
+    <p>CampusBook · Groupe CBEC — Eduardo COSTA PAULO &amp; Calvin BERNARDO</p>
+  </footer>
+
+  <!-- ========== MODALE : CONFIRMATION D'ANNULATION ========== -->
+  <dialog id="modale-annulation" class="modale" aria-labelledby="modale-annulation-titre">
+    <h2 id="modale-annulation-titre">Annuler cette réservation ?</h2>
+    <p id="modale-annulation-texte"></p>
+    <p>Le créneau sera libéré immédiatement et pourra être réservé par d'autres étudiants. Cette action est définitive.</p>
+    <form method="dialog" class="actions actions-droite">
+      <button type="submit" value="garder" class="btn btn-secondaire" autofocus>Garder</button>
+      <button type="submit" value="confirmer" class="btn btn-danger">Oui, annuler</button>
+    </form>
+  </dialog>
+
+  <!-- ========== MODALE : DÉTAILS D'UNE RÉSERVATION ========== -->
+  <dialog id="modale-details" class="modale" aria-labelledby="modale-details-titre">
+    <h2 id="modale-details-titre">Détails de la réservation</h2>
+    <dl class="fiche-details">
+      <dt>Salle</dt>        <dd id="details-salle"></dd>
+      <dt>Date</dt>         <dd id="details-date"></dd>
+      <dt>Horaire</dt>      <dd id="details-horaire"></dd>
+      <dt>Participants</dt> <dd id="details-participants"></dd>
+      <dt>Motif</dt>        <dd id="details-motif"></dd>
+      <dt>Demandeur</dt>    <dd id="details-demandeur"></dd>
+      <dt>Statut</dt>       <dd id="details-statut"></dd>
+    </dl>
+    <form method="dialog" class="actions actions-droite">
+      <button type="submit" class="btn btn-secondaire">Fermer</button>
+    </form>
+  </dialog>
+
+  <!-- ========== MODÈLE D'UNE LIGNE DU TABLEAU (cloné par JS) ========== -->
+  <template id="modele-ligne-reservation">
+    <tr>
+      <td>
+        <strong class="ligne-salle"></strong>
+        <span class="ligne-sous-titre aide"></span>
+      </td>
+      <td class="ligne-date"></td>
+      <td>
+        <span class="ligne-horaire"></span>
+        <span class="ligne-duree aide"></span>
+      </td>
+      <td class="ligne-participants"></td>
+      <!-- classes possibles : badge-confirmee, badge-annulee -->
+      <td><span class="badge ligne-statut"></span></td>
+      <td class="col-actions ligne-actions">
+        <button type="button" class="btn btn-secondaire btn-petit btn-details">Détails</button>
+        <button type="button" class="btn btn-danger-contour btn-petit btn-annuler">Annuler</button>
+        <a href="reservation.html" class="btn btn-secondaire btn-petit btn-reserver-nouveau" hidden>Réserver à nouveau</a>
+      </td>
+    </tr>
+  </template>
+
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catalogue des salles — CampusBook</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/composants.css">
+  <script type="module" src="js/pages/catalogue.js"></script>
+</head>
+<body>
+
+  <!-- ========== EN-TÊTE COMMUN ========== -->
+  <header class="entete">
+    <a href="index.html" class="logo">Campus<span>Book</span></a>
+    <nav class="nav-principale" aria-label="Navigation principale">
+      <ul>
+        <li><a href="index.html" aria-current="page">Catalogue des salles</a></li>
+        <li><a href="reservation.html">Réserver</a></li>
+        <li><a href="mes-reservations.html">Mes réservations</a></li>
+      </ul>
+    </nav>
+    <div class="utilisateur">
+      <span class="avatar" aria-hidden="true">CB</span>
+      <span class="utilisateur-nom">Calvin BERNARDO</span>
+    </div>
+  </header>
+
+  <main class="conteneur">
+
+    <!-- ========== TITRE + RECHERCHE ========== -->
+    <div class="page-titre">
+      <div>
+        <h1>Catalogue des salles</h1>
+        <p class="sous-titre">10 salles réservables · ouvertes du lundi au samedi, 08:00 – 20:00</p>
+      </div>
+      <div class="recherche">
+        <label for="recherche" class="visuellement-cache">Rechercher une salle</label>
+        <input type="search" id="recherche" name="recherche"
+               placeholder="Rechercher une salle (nom, bâtiment)…" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="catalogue">
+
+      <!-- ========== FILTRES ========== -->
+      <aside class="panneau filtres" aria-labelledby="titre-filtres">
+        <h2 id="titre-filtres">Filtres</h2>
+
+        <form id="form-filtres">
+          <div class="champ">
+            <label for="filtre-date">Date</label>
+            <input type="date" id="filtre-date" name="date">
+          </div>
+
+          <fieldset class="champ">
+            <legend>Créneau souhaité</legend>
+            <div class="ligne-2">
+              <div>
+                <label for="filtre-debut" class="visuellement-cache">Heure de début</label>
+                <input type="time" id="filtre-debut" name="heureDebut"
+                       min="08:00" max="20:00" step="1800">
+              </div>
+              <div>
+                <label for="filtre-fin" class="visuellement-cache">Heure de fin</label>
+                <input type="time" id="filtre-fin" name="heureFin"
+                       min="08:00" max="20:00" step="1800">
+              </div>
+            </div>
+            <p class="aide">Affiche la disponibilité sur ce créneau</p>
+          </fieldset>
+
+          <div class="champ">
+            <label for="filtre-participants">Nombre de participants</label>
+            <input type="number" id="filtre-participants" name="participants"
+                   min="1" max="120" step="1" aria-describedby="aide-participants">
+            <p class="aide" id="aide-participants">Signale les salles trop petites</p>
+          </div>
+
+          <fieldset class="champ">
+            <legend>Équipements</legend>
+            <!-- value = code utilisé dans SALLES[].equipements (voir js/data/salles.js) -->
+            <label class="case"><input type="checkbox" name="equipements" value="projecteur"> Vidéoprojecteur</label>
+            <label class="case"><input type="checkbox" name="equipements" value="ecran"> Écran TV</label>
+            <label class="case"><input type="checkbox" name="equipements" value="tableau"> Tableau blanc</label>
+            <label class="case"><input type="checkbox" name="equipements" value="visio"> Visioconférence</label>
+            <label class="case"><input type="checkbox" name="equipements" value="micro"> Micro / sonorisation</label>
+            <label class="case"><input type="checkbox" name="equipements" value="ordinateurs"> Postes informatiques</label>
+            <label class="case"><input type="checkbox" name="equipements" value="prises"> Prises à chaque place</label>
+          </fieldset>
+
+          <div class="champ">
+            <label for="filtre-batiment">Bâtiment</label>
+            <select id="filtre-batiment" name="batiment">
+              <option value="">Tous</option>
+              <option value="A">Bâtiment A</option>
+              <option value="B">Bâtiment B</option>
+              <option value="C">Bâtiment C</option>
+            </select>
+          </div>
+
+          <label class="case">
+            <input type="checkbox" id="filtre-disponibles" name="disponibles">
+            Uniquement les salles disponibles
+          </label>
+
+          <div class="actions">
+            <button type="submit" class="btn btn-primaire">Appliquer</button>
+            <button type="reset" class="btn btn-secondaire">Réinitialiser</button>
+          </div>
+        </form>
+      </aside>
+
+      <!-- ========== RÉSULTATS ========== -->
+      <section class="resultats" aria-labelledby="resume-resultats">
+        <div class="resultats-barre">
+          <!-- Rempli par JS, ex. : « 10 salles (dont 1 trop petite) · jeu. 20/11, 10:00 – 12:00, 6 pers. » -->
+          <p id="resume-resultats" aria-live="polite"></p>
+          <div class="tri">
+            <label for="tri">Trier par :</label>
+            <select id="tri" name="tri">
+              <option value="capacite">Capacité</option>
+              <option value="nom">Nom</option>
+              <option value="batiment">Bâtiment</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Les cartes des salles sont générées ici par afficherSalles() -->
+        <div id="liste-salles" class="grille-salles"></div>
+
+        <p id="aucun-resultat" class="etat-vide" hidden>
+          Aucune salle ne correspond à vos critères. Essayez d'élargir les filtres.
+        </p>
+
+        <div class="plus">
+          <button type="button" id="btn-plus" class="btn btn-secondaire" hidden>Afficher les suivantes</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="pied">
+    <p>CampusBook · Groupe CBEC — Eduardo COSTA PAULO &amp; Calvin BERNARDO</p>
+  </footer>
+
+  <!-- ========== MODÈLE D'UNE CARTE SALLE (cloné par JS) ========== -->
+  <template id="modele-carte-salle">
+    <article class="carte-salle">
+      <div class="carte-image">
+        <img src="" alt="" class="carte-photo">
+        <!-- classes possibles : badge-dispo, badge-occupee, badge-trop-petite -->
+        <span class="badge carte-statut"></span>
+      </div>
+      <div class="carte-corps">
+        <h3 class="carte-nom"></h3>
+        <p class="carte-infos">
+          <span class="carte-capacite"></span>
+          <span class="carte-localisation"></span>
+        </p>
+        <p class="carte-description"></p>
+        <ul class="carte-equipements etiquettes"></ul>
+      </div>
+      <div class="carte-pied">
+        <span class="carte-libre"></span>
+        <a href="reservation.html" class="btn btn-primaire carte-bouton">Réserver</a>
+      </div>
+    </article>
+  </template>
+
+</body>
+</html>
