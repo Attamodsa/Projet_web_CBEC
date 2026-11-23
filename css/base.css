@@ -1,0 +1,121 @@
+/* ==========================================================
+   CampusBook — base.css
+   Variables (couleurs, espacements), reset, typographie
+   ========================================================== */
+
+:root {
+  /* Couleurs */
+  --bleu: #2557e8;
+  --bleu-fonce: #1b44bd;
+  --bleu-clair: #e8eefd;
+  --texte: #1a2233;
+  --texte-doux: #5b6577;
+  --fond: #f4f6fa;
+  --blanc: #ffffff;
+  --bordure: #dde2ea;
+  --vert: #11845b;
+  --vert-clair: #e3f5ec;
+  --rouge: #c8312b;
+  --rouge-clair: #fdebea;
+  --gris-clair: #eef1f5;
+
+  /* Espacements et formes */
+  --espace-xs: 4px;
+  --espace-s: 8px;
+  --espace-m: 16px;
+  --espace-l: 24px;
+  --espace-xl: 40px;
+  --arrondi: 12px;
+  --arrondi-petit: 8px;
+  --ombre: 0 1px 3px rgba(26, 34, 51, 0.08);
+  --ombre-forte: 0 8px 24px rgba(26, 34, 51, 0.12);
+
+  /* Typographie */
+  --police: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+h1, h2, h3,
+p, ul, ol, dl, dd,
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+
+fieldset {
+  border: none;
+  min-width: 0;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+/* ---------- Typographie ---------- */
+body {
+  font-family: var(--police);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--texte);
+  background-color: var(--fond);
+}
+
+h1 {
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+
+a {
+  color: var(--bleu);
+}
+
+/* Texte lu par les lecteurs d'écran mais invisible à l'écran */
+.visuellement-cache {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Contour visible au clavier */
+:focus-visible {
+  outline: 3px solid var(--bleu);
+  outline-offset: 2px;
+}
+
+[hidden] {
+  display: none !important;
+}

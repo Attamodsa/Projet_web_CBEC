@@ -1,0 +1,247 @@
+/* ==========================================================
+   CampusBook — layout.css
+   En-tête, navigation, grilles des pages, responsive
+   ========================================================== */
+
+/* ---------- En-tête ---------- */
+.entete {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-l);
+  padding: var(--espace-m) var(--espace-xl);
+  background-color: var(--blanc);
+  border-bottom: 1px solid var(--bordure);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--texte);
+  text-decoration: none;
+}
+
+.logo span {
+  color: var(--bleu);
+}
+
+.nav-principale ul {
+  display: flex;
+  gap: var(--espace-s);
+}
+
+.nav-principale a {
+  display: block;
+  padding: var(--espace-s) var(--espace-m);
+  border-radius: var(--arrondi-petit);
+  color: var(--texte-doux);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.nav-principale a:hover {
+  background-color: var(--gris-clair);
+  color: var(--texte);
+}
+
+/* Lien de la page en cours */
+.nav-principale a[aria-current="page"] {
+  background-color: var(--bleu-clair);
+  color: var(--bleu);
+  font-weight: 600;
+}
+
+.utilisateur {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-s);
+  margin-left: auto;
+  color: var(--texte-doux);
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--bleu-clair);
+  color: var(--bleu);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+/* ---------- Contenu ---------- */
+.conteneur {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: var(--espace-xl);
+}
+
+.page-titre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--espace-m);
+  margin-bottom: var(--espace-l);
+}
+
+.sous-titre {
+  margin-top: var(--espace-xs);
+  margin-bottom: var(--espace-l);
+  color: var(--texte-doux);
+}
+
+.page-titre .sous-titre {
+  margin-bottom: 0;
+}
+
+/* Page 1 : filtres à gauche, résultats à droite */
+.catalogue {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--espace-l);
+  align-items: start;
+}
+
+.resultats-barre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espace-s);
+  margin-bottom: var(--espace-m);
+}
+
+.grille-salles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--espace-l);
+}
+
+/* Page 2 : formulaire à gauche, fiche + planning à droite */
+.reservation {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--espace-l);
+  align-items: start;
+}
+
+.colonne-infos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espace-l);
+}
+
+/* Page 3 : compteurs */
+.compteurs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--espace-m);
+  margin-bottom: var(--espace-l);
+}
+
+/* Grilles de champs dans les formulaires */
+.ligne-2,
+.ligne-3 {
+  display: grid;
+  gap: var(--espace-m);
+}
+
+.ligne-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Empêche les champs (date, heure) de déborder de leur colonne */
+.ligne-2 > *,
+.ligne-3 > * {
+  min-width: 0;
+}
+
+.ligne-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* ---------- Pied de page ---------- */
+.pied {
+  padding: var(--espace-l) var(--espace-xl);
+  color: var(--texte-doux);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* ==========================================================
+   Responsive
+   ========================================================== */
+
+/* Tablettes */
+@media (max-width: 960px) {
+  .entete {
+    flex-wrap: wrap;
+    padding: var(--espace-m) var(--espace-l);
+    gap: var(--espace-m);
+  }
+
+  .nav-principale {
+    order: 3;
+    width: 100%;
+  }
+
+  .conteneur {
+    padding: var(--espace-l);
+  }
+
+  .catalogue,
+  .reservation {
+    grid-template-columns: 1fr;
+  }
+
+  .ligne-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Smartphones */
+@media (max-width: 600px) {
+  .entete {
+    padding: var(--espace-m);
+  }
+
+  .utilisateur-nom {
+    display: none;
+  }
+
+  .nav-principale ul {
+    flex-wrap: wrap;
+    gap: var(--espace-xs);
+  }
+
+  .nav-principale a {
+    padding: var(--espace-s) var(--espace-s);
+    white-space: nowrap;
+    font-size: 0.9rem;
+  }
+
+  .conteneur {
+    padding: var(--espace-m);
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .recherche,
+  .recherche input {
+    width: 100%;
+  }
+
+  .compteurs,
+  .ligne-3 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Les deux heures du filtre restent côte à côte, les autres champs s'empilent */
+  .reservation .ligne-2 {
+    grid-template-columns: 1fr;
+  }
+}
