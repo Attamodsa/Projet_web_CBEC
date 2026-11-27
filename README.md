@@ -31,12 +31,18 @@ CampusBook/
 │   ├── layout.css          → en-tête, grilles, responsive
 │   └── composants.css      → cartes, boutons, formulaires, badges
 ├── js/
-│   ├── data/salles.js      → tableau des 8 salles
-│   ├── pages/catalogue.js  → affichage, filtres, tri
-│   ├── pages/reservation.js
-│   ├── pages/mes-reservations.js
-│   └── ui/compteurs.js     → compteur de salles affichées
-└── tests/tests.html        → page de tests (étape suivante)
+│   ├── data/salles.js         → tableau des 8 salles + horaires d'ouverture
+│   ├── utils/temps.js         → heures ↔ minutes, seChevauchent(), estPasse()
+│   ├── services/stockage.js   → lecture / écriture dans le localStorage
+│   ├── services/reservations.js → règles R1 à R7 : validation, conflits, création, annulation
+│   ├── pages/catalogue.js     → affichage, filtres, tri, disponibilité
+│   ├── pages/reservation.js   → formulaire, erreurs, confirmation, planning
+│   ├── pages/mes-reservations.js → liste, onglets, compteurs, annulation
+│   └── ui/compteurs.js        → compteur de salles affichées
+├── tests/
+│   ├── tests.html          → page qui exécute les tests
+│   └── reservations.test.js → T1 à T13 (D01) + cas limites T14 à T29
+└── docs/                   → conception D01, document de tests et compte rendu D03
 ```
 
 ## Fonctionnalités
@@ -47,11 +53,11 @@ CampusBook/
 - [x] Compteur du nombre de salles affichées
 - [x] Réinitialisation des filtres
 - [x] Interface responsive (ordinateur et smartphone)
-- [ ] Disponibilité des salles selon la date et le créneau
-- [ ] Réservation avec validation et détection des conflits horaires
-- [ ] Consultation et annulation des réservations
-- [ ] Compteurs de la page « Mes réservations »
-- [ ] Conservation des données (localStorage)
+- [x] Disponibilité des salles selon la date et le créneau
+- [x] Réservation avec validation et détection des conflits horaires
+- [x] Consultation et annulation des réservations
+- [x] Compteurs de la page « Mes réservations »
+- [x] Conservation des données (localStorage) — première version
 
 ---
 
@@ -89,6 +95,18 @@ CampusBook/
 ### Évolutions par rapport au D01
 - **8 salles au lieu de 10** (S09 et S10 retirées), conformément à l'énoncé du D02.
 - Le champ « Nombre de participants » du catalogue devient un **filtre de capacité minimale** : les salles trop petites sont masquées au lieu d'être seulement signalées.
+
+## Compte rendu — D03
+
+Fonctionnement principal de la réservation : formulaire, validation, détection des conflits horaires, enregistrement.
+
+- Compte rendu (réalisations, explication des conflits, difficultés et corrections) : [`docs/COMPTE_RENDU_D03.md`](docs/COMPTE_RENDU_D03.md)
+- Document de tests (tests manuels + tests T1 à T29, 29 / 29 réussis) : [`docs/TESTS_D03.md`](docs/TESTS_D03.md)
+- Dossier de conception D01 (règles R1 à R7, scénarios T1 à T13) : [`docs/conception-D01.pdf`](docs/conception-D01.pdf)
+
+**Règle de détection des conflits (R6) :** deux réservations confirmées de la même salle, le même jour, se chevauchent si `debutA < finB && debutB < finA` (heures converties en minutes). Les comparaisons strictes autorisent les réservations consécutives (10:00 – 12:00 puis 12:00 – 13:00).
+
+**Évolution :** la durée maximale passe de 4 h (D01) à 3 h (énoncé du D03).
 
 ## Crédits
 Photos des salles : [Unsplash](https://unsplash.com) (licence Unsplash, utilisation libre).

@@ -584,3 +584,81 @@ label.case input {
     flex: 1;
   }
 }
+
+/* ---------- D03 : planning du jour (page Réservation) ---------- */
+.planning-legende {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-s) var(--espace-m);
+  margin-bottom: var(--espace-s);
+  color: var(--texte-doux);
+  font-size: 0.8rem;
+}
+
+.planning-legende li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pastille {
+  width: 12px;
+  height: 12px;
+  border: 1px solid var(--bordure);
+  border-radius: 3px;
+  background-color: var(--blanc);
+}
+
+.planning-grille {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+}
+
+.creneau {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid var(--bordure);
+  border-radius: 6px;
+  background-color: var(--blanc);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.creneau-etat {
+  font-weight: 600;
+}
+
+.creneau-occupe,
+.pastille-occupe {
+  border-color: #f3c2bf;
+  background-color: var(--rouge-clair);
+  color: var(--rouge);
+}
+
+.creneau-demande,
+.pastille-demande {
+  border-color: var(--bleu);
+  background-color: var(--bleu-clair);
+  color: var(--bleu-fonce);
+}
+
+.creneau-conflit,
+.pastille-conflit {
+  border-color: var(--rouge);
+  background: repeating-linear-gradient(135deg, var(--rouge-clair) 0 6px, #f7cfcc 6px 12px);
+  color: var(--rouge);
+}
+
+.alerte-erreur a {
+  color: inherit;
+}
+
+.alerte-succes a {
+  display: inline-block;
+  margin-top: var(--espace-xs);
+  color: #0b5e40;
+  font-weight: 600;
+}

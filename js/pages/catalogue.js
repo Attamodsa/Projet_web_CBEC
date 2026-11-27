@@ -8,12 +8,16 @@
  *  - trie les résultats ;
  *  - affiche le nombre de salles trouvées ;
  *  - réinitialise les filtres.
- * La date et le créneau sont lus et affichés dans le résumé, mais la
- * disponibilité réelle des salles sera calculée à l'étape suivante.
+ * D03 : si une date et un créneau sont choisis, chaque carte indique si la
+ * salle est disponible ou occupée (réservations enregistrées), et la case
+ * « Uniquement les salles disponibles » masque les salles occupées.
  */
 
 import { SALLES, EQUIPEMENTS } from "../data/salles.js";
 import { afficherCompteurSalles } from "../ui/compteurs.js";
+import { chargerReservations } from "../services/stockage.js";
+import { verifierDisponibilite } from "../services/reservations.js";
+import { enMinutes } from "../utils/temps.js";
 
 // Mettre à true quand les photos S01.jpg … S08.jpg seront dans assets/img/
 const AVEC_PHOTOS = true;
@@ -84,7 +88,28 @@ function lireCriteres() {
     debut: champDebut.value,
     fin: champFin.value,
     tri: listeTri.value,
+    disponiblesSeulement: caseDisponibles.checked,
+    reservations: chargerReservations(), // relues à chaque mise à jour
   };
+}
+
+/** Vrai si une date et un créneau cohérent (début < fin) sont choisis. */
+function creneauChoisi(criteres) {
+  return Boolean(criteres.date) && enMinutes(criteres.debut) < enMinutes(criteres.fin);
+}
+
+/**
+ * Statut de la salle pour le créneau filtré (D01, point de contact EC ↔ CB) :
+ *  - null                          si aucun créneau n'est choisi ;
+ *  - { libre: true }               si la salle est disponible ;
+ *  - { libre: false, conflit: r }  si une réservation r occupe le créneau.
+ */
+function statutSalle(salle, criteres) {
+  if (!creneauChoisi(criteres)) return null;
+  const conflit = verifierDisponibilite(
+    salle.id, criteres.date, enMinutes(criteres.debut), enMinutes(criteres.fin), criteres.reservations
+  );
+  return conflit ? { libre: false, conflit } : { libre: true };
 }
 
 // ---------- 2. Filtrer et trier ----------
@@ -108,7 +133,8 @@ function filtrerSalles(salles, criteres) {
       correspondRecherche(salle, criteres.texte) &&
       salle.capacite >= criteres.capaciteMin &&
       possedeEquipements(salle, criteres.equipements) &&
-      (criteres.batiment === "" || salle.batiment === criteres.batiment)
+      (criteres.batiment === "" || salle.batiment === criteres.batiment) &&
+      (!criteres.disponiblesSeulement || statutSalle(salle, criteres)?.libre !== false)
     );
   });
 }
@@ -142,9 +168,16 @@ function creerCarteSalle(salle, criteres) {
     photo.remove();
   }
 
-  // Badge : accessibilité PMR (le statut Disponible / Occupée viendra à l'étape suivante)
+  // Badge : Disponible / Occupée si un créneau est choisi, sinon accessibilité PMR
   const badge = carte.querySelector(".carte-statut");
-  if (salle.accessiblePMR) {
+  const statut = statutSalle(salle, criteres);
+  if (statut?.libre === true) {
+    badge.textContent = "Disponible";
+    badge.classList.add("badge-dispo");
+  } else if (statut?.libre === false) {
+    badge.textContent = `Occupée ${statut.conflit.heureDebut}–${statut.conflit.heureFin}`;
+    badge.classList.add("badge-occupee");
+  } else if (salle.accessiblePMR) {
     badge.textContent = "Accès PMR";
     badge.classList.add("badge-info");
   }
@@ -237,10 +270,8 @@ boutonReinitialiser.addEventListener("click", (event) => {
   reinitialiserFiltres();
 });
 
-// La disponibilité réelle sera calculée à l'étape suivante :
-// la case est visible mais désactivée pour l'instant.
-caseDisponibles.disabled = true;
-caseDisponibles.parentElement.title = "Disponible à la prochaine étape";
+// La case « Uniquement les salles disponibles » n'a d'effet que si un créneau est choisi.
+caseDisponibles.parentElement.title = "Choisissez une date et un créneau pour utiliser ce filtre";
 
 // ---------- Premier affichage ----------
 mettreAJour();

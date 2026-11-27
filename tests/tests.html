@@ -11,7 +11,7 @@
 <body>
   <main class="conteneur">
     <h1>Tests des règles métier</h1>
-    <p class="sous-titre">Scénarios T1 à T13 du dossier de conception (D01). Le stockage est réinitialisé avant chaque test.</p>
+    <p class="sous-titre">Scénarios T1 à T13 du dossier de conception (D01) et cas limites T14 à T29 (D03). Date du jour fixée au 15/11/2026 à 09:00 ; chaque test repart d’un stockage qui ne contient que R0 (Salle Hopper, 20/11/2026, 10:00 – 12:00). Le vrai localStorage n’est pas modifié.</p>
 
     <!-- Résumé, ex. : « 13 / 13 tests réussis » -->
     <p id="resume-tests" class="alerte" aria-live="polite">Exécution des tests…</p>
@@ -21,6 +21,7 @@
         <tr>
           <th scope="col">#</th>
           <th scope="col">Scénario</th>
+          <th scope="col">Règle</th>
           <th scope="col">Attendu</th>
           <th scope="col">Obtenu</th>
           <th scope="col">Résultat</th>

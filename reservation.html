@@ -104,7 +104,7 @@
 
           <div class="ligne-2">
             <div class="champ">
-              <label for="nom">Nom <span class="obligatoire" aria-hidden="true">*</span></label>
+              <label for="nom">Nom du responsable <span class="obligatoire" aria-hidden="true">*</span></label>
               <input type="text" id="nom" name="nom" required autocomplete="name"
                      aria-describedby="erreur-nom">
               <p class="erreur-champ" id="erreur-nom"></p>
@@ -123,8 +123,9 @@
           </div>
 
           <p class="regles">
-            <strong>Règles :</strong> durée de 30 min à 4 h · fin strictement après le début ·
-            pas de réservation dans le passé · horaires 08:00 – 20:00 · participants ≤ capacité.
+            <strong>Règles :</strong> durée de 30 min à 3 h · fin strictement après le début ·
+            créneaux par pas de 30 min · horaires 08:00 – 20:00 · pas de réservation dans le passé ·
+            participants entre 1 et la capacité de la salle · une salle ne peut pas être réservée deux fois sur le même créneau.
           </p>
 
           <div class="actions actions-droite">
@@ -153,6 +154,12 @@
         <!-- Planning du jour (rempli par afficherPlanning()) -->
         <section id="planning" class="panneau planning" aria-labelledby="planning-titre">
           <h2 id="planning-titre">Occupation du jour</h2>
+          <ul class="planning-legende" aria-hidden="true">
+            <li><span class="pastille"></span> Libre</li>
+            <li><span class="pastille pastille-occupe"></span> Occupé</li>
+            <li><span class="pastille pastille-demande"></span> Demandé</li>
+            <li><span class="pastille pastille-conflit"></span> Conflit</li>
+          </ul>
           <div id="planning-grille" class="planning-grille"></div>
           <p id="prochain-creneau" class="aide"></p>
         </section>
