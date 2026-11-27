@@ -1,0 +1,2 @@
+Dépôt Git du projet CampusBook (groupe CBEC) :
+https://github.com/Attamodsa/Projet_web_CBEC

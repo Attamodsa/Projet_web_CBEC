@@ -31,7 +31,7 @@ export const HORAIRES = {
   fermeture: 20 * 60,  // 20:00
   pas: 30,             // créneaux par pas de 30 minutes
   dureeMin: 30,        // 30 minutes minimum
-  dureeMax: 4 * 60,    // 4 heures maximum
+  dureeMax: 3 * 60,    // 3 heures maximum (énoncé du D03)
 };
 
 export const SALLES = [
